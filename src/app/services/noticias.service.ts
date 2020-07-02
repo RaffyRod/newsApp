@@ -16,6 +16,11 @@ const headers = new HttpHeaders({
 })
 export class NoticiasService {
 
+  headLinesPage = 0;
+
+  categoriaActual = '';
+  categoriaPage = 0;
+
   fecha = new Date();
   
 
@@ -29,13 +34,21 @@ export class NoticiasService {
   }
 
   getTopHeadLines(){
+
+    this.headLinesPage ++;
  
-     return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us`);
-     //https://newsapi.org/v2/top-headlines?country=us&apiKey=1698b1e051ff45fba817cb7d683c423b
-    // return  this.http.get<RespuestaTopHeadlines>(`http://newsapi.org/v2/everything?q=bitcoin&from=${this.fecha}&sortBy=publishedAt&apiKey=1698b1e051ff45fba817cb7d683c423b`);
+     return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&page=${this.headLinesPage}`);
+    
   }
   getTopHeadlinesCategorias( categoria: string){
-    // return  this.http.get(`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=1698b1e051ff45fba817cb7d683c423b`);
-    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&category=${ categoria }`);
+
+    if(this.categoriaActual === categoria ){
+          this.categoriaPage++;
+    }else{
+      this.categoriaPage = 1;
+      this.categoriaActual = categoria;
+    }
+    
+    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&category=${ categoria }&page=${ this.categoriaPage}`);
   }
 }

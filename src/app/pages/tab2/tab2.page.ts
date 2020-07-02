@@ -23,14 +23,31 @@ export class Tab2Page implements OnInit {
 
   ionViewDidEnter() {  //parecido al onInit pero de ionic
     this.segment.value = this.categorias[0];
-    this.noticiasService.getTopHeadlinesCategorias( this.categorias[0] ) 
-    .subscribe( resp => {
-      console.log(resp);
-      this.noticias.push(...resp.articles);
-    });           
+    
+    this.cargarNoticias( this.categorias[0] );
  
   }
 
-  cambioCategoria( event ){}
+  cambioCategoria( event ){
+      this.noticias = [];
+      this.cargarNoticias( event.detail.value );
+  }
+
+  cargarNoticias( categoria: string, event?){
+    
+    this.noticiasService.getTopHeadlinesCategorias( categoria ) 
+    .subscribe( resp => {
+      console.log(resp);
+      this.noticias.push(...resp.articles);
+      if(event){
+        event.target.complete();
+      }
+    }); 
+
+  }
+
+  loadData( event ){
+    this.cargarNoticias( this.segment.value, event );
+  }
 
 }
